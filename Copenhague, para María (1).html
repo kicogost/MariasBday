@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Copenhague, para María</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F5; --surface:#FFFFFF; --ink:#1B2A41; --muted:#5A6B80;
+  --gold:#B07A1C; --gold-soft:#F6E3B8; --pine:#2F5D50; --rose:#B8475E;
+  --line:rgba(27,42,65,.13);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1A2B; --surface:#17253D; --ink:#EEF2F5; --muted:#9DB0C6;
+    --gold:#F2C14E; --gold-soft:#3A3320; --pine:#7CC0AC; --rose:#E58A9C;
+    --line:rgba(238,242,245,.12);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1A2B; --surface:#17253D; --ink:#EEF2F5; --muted:#9DB0C6;
+  --gold:#F2C14E; --gold-soft:#3A3320; --pine:#7CC0AC; --rose:#E58A9C;
+  --line:rgba(238,242,245,.12);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:'Karla',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.serif{font-family:'Gloock',Georgia,'Times New Roman',serif;font-weight:400}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* Cover */
+.cover{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:hidden;
+  background:radial-gradient(120% 80% at 50% 0%,#20345A 0%,#0E1A2B 60%,#0A1322 100%);
+  color:#F3EEE2;display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  transition:opacity .7s ease, visibility .7s}
+.cover.gone{opacity:0;visibility:hidden}
+#snow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cover-text{position:relative;z-index:2;max-width:30rem;margin:0 auto;padding:9vh 28px 0;text-align:center}
+.for{color:#C9D6E6;font-size:16px;margin:0 0 10px}
+.cover h1{font-size:clamp(44px,13vw,76px);line-height:1.02;margin:0 0 18px;letter-spacing:-.01em}
+.cover p.lede{color:#C9D6E6;font-size:18px;margin:0 auto 30px;max-width:24rem}
+.cta{appearance:none;border:0;cursor:pointer;background:#F2C14E;color:#1B2A41;
+  font-weight:700;font-size:17px;padding:15px 28px;border-radius:999px;
+  box-shadow:0 0 0 6px rgba(242,193,78,.16)}
+.cta:active{transform:translateY(1px)}
+.swap{transition:opacity .45s ease}
+.swap.out{opacity:0}
+.town{position:absolute;left:0;right:0;bottom:0;width:100%;height:min(38vh,64vw);z-index:1}
+.win{fill:#22324C;transition:fill .5s ease}
+.win.lit{fill:#F6C453;filter:url(#glow)}
+
+/* App */
+.wrap{max-width:600px;margin:0 auto;padding:0 20px 56px}
+.hero{padding:34px 0 18px}
+.hero h1{font-size:clamp(46px,12vw,64px);line-height:1;margin:0}
+.hero .dates{color:var(--muted);margin:8px 0 0;font-size:17px}
+.status{margin:22px 0 0;background:var(--surface);border:1px solid var(--line);
+  border-left:4px solid var(--gold);border-radius:14px;padding:16px 18px}
+.status .big{font-size:24px;line-height:1.25;margin:0}
+.status .small{color:var(--muted);margin:6px 0 0;font-size:15px}
+.status .jump{appearance:none;border:0;background:none;padding:0;margin-top:10px;
+  color:var(--gold);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+
+
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 6px}
+.day{appearance:none;cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.day b{display:block;font-size:16px}
+.day span{display:block;color:var(--muted);font-size:13px;line-height:1.3;margin-top:2px}
+.day[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.day-title{font-size:30px;margin:22px 0 4px}
+.day-sub{color:var(--muted);margin:0 0 14px}
+
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.timeline::before{content:"";position:absolute;left:66px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.stop{position:relative}
+.stop-head{appearance:none;background:none;border:0;cursor:pointer;width:100%;text-align:left;
+  display:grid;grid-template-columns:52px 30px 1fr;align-items:start;padding:12px 0}
+.time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted);padding-top:1px}
+.dot{width:14px;height:14px;border-radius:50%;margin:5px 0 0 7px;background:var(--bg);
+  border:2px solid var(--muted);position:relative;z-index:1}
+.stop.booked .dot{border-color:var(--rose)}
+.stop.done .dot{background:var(--pine);border-color:var(--pine)}
+.stop.now .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 6px var(--gold-soft)}
+.title{display:block;font-weight:700;font-size:18px;line-height:1.3}
+.stop.done .title{color:var(--muted)}
+.note{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+.badge{display:inline-block;margin-left:8px;font-size:12px;font-weight:700;color:var(--rose);
+  border:1px solid currentColor;border-radius:999px;padding:1px 8px;vertical-align:2px}
+.stop-more{margin:0 0 8px 82px;padding:0 0 12px}
+.stop-more p{margin:0 0 12px;font-size:16px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{appearance:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:8px 14px;border-radius:999px;font-weight:700;font-size:15px}
+.btn.primary{background:var(--pine);border-color:var(--pine);color:#fff}
+
+
+
+.foot{margin-top:44px;text-align:center;color:var(--muted);font-size:15px}
+.link{appearance:none;background:none;border:0;cursor:pointer;color:var(--gold);
+  font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:4px}
+[hidden]{display:none !important}
+
+
+@media (max-height:760px){
+  .cover-text{padding-top:6vh}
+  .cover h1{font-size:clamp(40px,11vw,60px);margin-bottom:12px}
+  .cover p.lede{font-size:16px;margin-bottom:22px}
+  .town{height:min(32vh,60vw)}
+}
+@media (max-width:360px){
+  .days{gap:6px}
+  .day{padding:9px 9px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<section class="cover" id="cover" aria-label="Sorpresa">
+  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="cover-text">
+    <div class="swap" id="stage1">
+      <p class="for">Para María</p>
+      <h1 class="serif">Feliz cumpleaños</h1>
+      <p class="lede">Te he preparado algo especial. Está esperando detrás de este botón.</p>
+      <button class="cta" id="openGift">Abre tu regalo</button>
+    </div>
+    <div class="swap out" id="stage2" hidden>
+      <p class="for">Del 13 al 15 de noviembre</p>
+      <h1 class="serif">Nos vamos a Copenhague</h1>
+      <p class="lede">Mercadillos de Navidad, cenas a la luz de las velas, Tivoli iluminado y una piscina en la azotea sobre la ciudad. Prepara tu abrigo más calentito.</p>
+      <button class="cta" id="seePlan">Ver nuestro fin de semana</button>
+    </div>
+  </div>
+  <svg class="town" id="town" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+</section>
+
+<main class="wrap" id="app">
+  <header class="hero">
+    <h1 class="serif">Copenhague</h1>
+    <p class="dates">Del viernes 13 al domingo 15 de noviembre de 2026</p>
+    <div class="status" id="status" aria-live="polite"></div>
+  </header>
+
+  <section id="view-plan">
+    <div class="days" id="days"></div>
+    <h2 class="day-title serif" id="dayTitle"></h2>
+    <p class="day-sub" id="daySub"></p>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <footer class="foot">
+    <p>Toca cualquier parada para ver los detalles, abrirla en el mapa o marcarla como hecha.</p>
+    <button class="link" id="replay">Ver la sorpresa otra vez</button>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var DAYS = [
+    {key:"fri", date:"2026-11-13", short:"Vie 13", mood:"Llegada y cena de cumpleaños",
+     title:"Viernes", sub:"Aterrizamos, paseamos entre luces y cena de cumpleaños a la luz de las velas."},
+    {key:"sat", date:"2026-11-14", short:"Sáb 14", mood:"Mercadillos y Tivoli",
+     title:"Sábado", sub:"Bollos de cardamomo, palacios, mercadillos de Navidad y Tivoli de noche."},
+    {key:"sun", date:"2026-11-15", short:"Dom 15", mood:"Último baño y vuelta",
+     title:"Domingo", sub:"Una mañana tranquila antes de volver a casa."}
+  ];
+
+  var STOPS = [
+    {id:"f1",day:"fri",t:"15:20",title:"Aterrizamos en Copenhague",note:"Vuelo directo desde Palma.",
+     more:"Sigue las indicaciones hacia los trenes. Lo más fácil es comprar los billetes en la app DOT Tickets."},
+    {id:"f2",day:"fri",t:"15:45",title:"Tren al centro",note:"Unos 15 minutos hasta la estación central.",
+     more:"Nos bajamos en København H. El hotel está justo al lado de la estación.",place:"Copenhagen Central Station"},
+    {id:"f3",day:"fri",t:"16:15",title:"Check-in en Villa Copenhagen",note:"Dejamos las maletas y nos arreglamos un poco.",
+     more:"Nuestra casa durante dos noches, en el precioso edificio de la antigua oficina de correos.",place:"Villa Copenhagen",booked:true},
+    {id:"f4",day:"fri",t:"16:45",title:"Paseo por Strøget",note:"La calle comercial iluminada al anochecer.",
+     more:"Tomamos un café y algo dulce por el camino para aguantar hasta la cena.",place:"Strøget, Copenhagen"},
+    {id:"f5",day:"fri",t:"17:00",title:"Mercadillo de Navidad H.C. Andersen",note:"Puestos en Nytorv y Gammeltorv.",
+     more:"En plena Strøget. Casetas de madera, bebidas calientes y almendras tostadas.",place:"Nytorv, Copenhagen"},
+    {id:"f6",day:"fri",t:"17:45",title:"Nyhavn",note:"El puerto de colores, iluminado de noche.",
+     more:"Si los puestos de Navidad están abiertos, damos una vuelta. Precioso de todas formas.",place:"Nyhavn, Copenhagen"},
+    {id:"f7",day:"fri",t:"18:30",title:"Metro de vuelta al hotel",note:"Línea M3 desde Kongens Nytorv, unos 5 minutos.",
+     more:"Nos bajamos en København H.",place:"Kongens Nytorv Station"},
+    {id:"f8",day:"fri",t:"18:45",title:"Piscina en la azotea",note:"Un baño calentito con el aire frío, en lo alto de la ciudad.",
+     more:"Y después, a arreglarnos para la cena de cumpleaños."},
+    {id:"f9",day:"fri",t:"20:30",title:"Cena de cumpleaños en Høst",note:"Cinco platos a la luz de las velas.",
+     more:"Langosta para ti y caviar con las vieiras. Feliz cumpleaños.",place:"Høst restaurant, Copenhagen",booked:true},
+
+    {id:"s1",day:"sat",t:"07:45",title:"Desayuno ligero en el hotel",note:"Algo pequeño, que lo mejor está por llegar.",
+     more:"Solo un café y algo ligero."},
+    {id:"s2",day:"sat",t:"08:30",title:"Juno the Bakery",note:"Los famosos bollos de cardamomo.",
+     more:"Metro hasta Østerport y un paseo corto. Si llegamos pronto, nos libramos de la cola del fin de semana.",place:"Juno the Bakery, Århusgade 48, Copenhagen"},
+    {id:"s3",day:"sat",t:"09:30",title:"Kastellet y la Sirenita",note:"Una fortaleza en forma de estrella y bajada al puerto.",
+     more:"Paseamos por las murallas y seguimos el agua hasta la Sirenita.",place:"Kastellet, Copenhagen"},
+    {id:"s4",day:"sat",t:"11:00",title:"Iglesia de Mármol y Amalienborg",note:"La gran cúpula y la plaza real.",
+     more:"Nos quedamos al cambio de guardia de mediodía.",place:"Frederik's Church, Copenhagen"},
+    {id:"s5",day:"sat",t:"12:15",title:"Nyhavn y Kongens Nytorv",note:"Comemos picoteando en los puestos de Navidad.",
+     more:"Æbleskiver, chocolate caliente y almendras tostadas. Y un vistazo a la pista de hielo de Kongens Nytorv.",place:"Nyhavn, Copenhagen"},
+    {id:"s6",day:"sat",t:"13:30",title:"Højbro Plads y Christiansborg",note:"Más puestos y vistas sobre los tejados.",
+     more:"Subir a la torre del palacio es gratis. Mejor comprobar que esté abierta ese día.",place:"Christiansborg Palace Tower"},
+    {id:"s7",day:"sat",t:"14:45",title:"Piscina y descanso",note:"Entramos en calor y descansamos antes de la noche.",
+     more:"Vuelta al hotel para un baño y un rato tranquilo."},
+    {id:"s8",day:"sat",t:"16:00",title:"Tivoli",note:"Miles de luces, el lago y la pista de hielo.",
+     more:"Paseamos entre los puestos, patinamos si nos apetece y vemos el encendido del árbol si es hoy.",place:"Tivoli Gardens",booked:true},
+    {id:"s9",day:"sat",t:"19:30",title:"Cena en Grøften",note:"El restaurante más antiguo de Tivoli, abierto desde 1874.",
+     more:"Menú danés de Navidad en el Teatercaféen, la sala original.",place:"Grøften, Tivoli",booked:true},
+    {id:"s10",day:"sat",t:"21:00",title:"Paseo nocturno",note:"Una última vuelta alrededor del lago iluminado.",
+     more:"Tivoli cierra tarde los sábados, así que sin prisa."},
+
+    {id:"u1",day:"sun",t:"07:30",title:"Baño por la mañana",note:"Un último chapuzón tranquilo en la azotea.",
+     more:"Suele ser el momento más tranquilo en la piscina."},
+    {id:"u2",day:"sun",t:"08:15",title:"Desayuno",note:"En el hotel o en una panadería junto a la estación.",
+     more:"Sin prisas."},
+    {id:"u3",day:"sun",t:"09:30",title:"Tren al aeropuerto",note:"Unos 15 minutos desde København H.",
+     more:"Llegaremos unas dos horas antes del vuelo.",place:"Copenhagen Central Station"},
+    {id:"u4",day:"sun",t:"11:45",title:"Vuelo a casa",note:"Aterrizamos en Palma a las 14:45.",
+     more:"De vuelta a casa con la maleta llena de recuerdos."}
+  ];
+
+  var DEPART = at("2026-11-13","12:15");
+  var HOME = at("2026-11-15","14:45");
+
+  function at(date,time){ return new Date(date+"T"+time+":00+01:00"); }
+  function dayOf(key){ for(var i=0;i<DAYS.length;i++){ if(DAYS[i].key===key) return DAYS[i]; } return DAYS[0]; }
+  function stopDate(s){ return at(dayOf(s.day).date, s.t); }
+
+  /* storage */
+  function load(key, fallback){
+    try{ var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+  }
+  function save(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+  }
+  var done = load("cph-done", []);
+
+  var reduce = false;
+  try{ reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+
+  /* ---------- Cover ---------- */
+  var cover = document.getElementById("cover");
+  var stage1 = document.getElementById("stage1");
+  var stage2 = document.getElementById("stage2");
+  var townSvg = document.getElementById("town");
+  var windows = [];
+
+  function buildTown(){
+    var NS = "http://www.w3.org/2000/svg";
+    var colors = ["#E3A73B","#B8475E","#3F7CAC","#D9B48F","#8C3B2E","#E7D3A1","#4E8C76","#C9772F"];
+    var seed = 11;
+    function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
+    var W = 420, base = 150, x = 0, i = 0, html = "";
+    html += '<defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%">' +
+      '<feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/>' +
+      '<feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    var reflections = "";
+    while(x < W){
+      var w = 30 + Math.round(rnd()*16);
+      var h = 62 + Math.round(rnd()*46);
+      var c = colors[i % colors.length];
+      var top = base - h;
+      html += '<rect x="'+x+'" y="'+top+'" width="'+w+'" height="'+h+'" fill="'+c+'"/>';
+      if(rnd() < 0.55){
+        html += '<path d="M'+x+' '+top+' L'+(x+w/2)+' '+(top-15)+' L'+(x+w)+' '+top+' Z" fill="'+c+'"/>';
+      } else {
+        var sw = w/5;
+        html += '<path d="M'+x+' '+top+' V'+(top-5)+' H'+(x+sw)+' V'+(top-10)+' H'+(x+2*sw)+' V'+(top-15)+
+          ' H'+(x+3*sw)+' V'+(top-10)+' H'+(x+4*sw)+' V'+(top-5)+' H'+(x+w)+' V'+top+' Z" fill="'+c+'"/>';
+      }
+      var cols = w > 38 ? 3 : 2, ww = 6, wh = 9;
+      var gap = (w - cols*ww)/(cols+1);
+      var rows = Math.floor((h-20)/18);
+      for(var r=0;r<rows;r++){
+        for(var k=0;k<cols;k++){
+          var wx = x + gap + k*(ww+gap), wy = top + 10 + r*18;
+          var pre = rnd() < 0.18 ? " lit" : "";
+          html += '<rect class="win'+pre+'" x="'+wx.toFixed(1)+'" y="'+wy+'" width="'+ww+'" height="'+wh+'" rx="1"/>';
+        }
+      }
+      reflections += '<rect x="'+x+'" y="'+base+'" width="'+w+'" height="'+(h*0.32).toFixed(0)+'" fill="'+c+'" opacity=".16"/>';
+      x += w; i++;
+    }
+    html += '<rect x="0" y="'+base+'" width="'+W+'" height="40" fill="#0A1424"/>' + reflections;
+    html += '<rect x="0" y="'+(base+3)+'" width="'+W+'" height="1" fill="#F6C453" opacity=".25"/>';
+    townSvg.setAttribute("viewBox","0 20 "+W+" 170");
+    townSvg.innerHTML = html;
+    windows = Array.prototype.slice.call(townSvg.querySelectorAll(".win:not(.lit)"));
+  }
+
+  function lightUp(){
+    var list = windows.slice();
+    for(var i=list.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=list[i]; list[i]=list[j]; list[j]=t; }
+    list.forEach(function(el, idx){
+      if(reduce){ el.classList.add("lit"); return; }
+      setTimeout(function(){ el.classList.add("lit"); }, 400 + idx*14);
+    });
+  }
+
+  function dimTown(){ windows.forEach(function(el){ el.classList.remove("lit"); }); }
+
+  /* snow */
+  var canvas = document.getElementById("snow");
+  var ctx = canvas.getContext ? canvas.getContext("2d") : null;
+  var flakes = [], snowing = false, rafId = null;
+  function sizeCanvas(){
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    if(ctx) ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function makeFlakes(){
+    flakes = [];
+    var n = Math.min(90, Math.round(canvas.clientWidth/6));
+    for(var i=0;i<n;i++){
+      flakes.push({x:Math.random()*canvas.clientWidth, y:Math.random()*canvas.clientHeight,
+        r:0.8+Math.random()*2.2, s:0.3+Math.random()*0.9, d:Math.random()*Math.PI*2});
+    }
+  }
+  function tick(){
+    if(!snowing || !ctx) return;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = "rgba(255,255,255,.85)";
+    for(var i=0;i<flakes.length;i++){
+      var f = flakes[i];
+      f.y += f.s; f.d += 0.01; f.x += Math.sin(f.d)*0.3;
+      if(f.y > h){ f.y = -4; f.x = Math.random()*w; }
+      ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fill();
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  function startSnow(){
+    if(reduce || !ctx) return;
+    sizeCanvas(); makeFlakes(); snowing = true; tick();
+  }
+  function stopSnow(){ snowing = false; if(rafId) cancelAnimationFrame(rafId); }
+  window.addEventListener("resize", function(){ if(snowing){ sizeCanvas(); makeFlakes(); } });
+
+  function swap(from, to){
+    from.classList.add("out");
+    setTimeout(function(){
+      from.hidden = true; to.hidden = false;
+      requestAnimationFrame(function(){ to.classList.remove("out"); });
+    }, reduce ? 0 : 450);
+  }
+
+  function showCover(){
+    stage1.hidden = false; stage1.classList.remove("out");
+    stage2.hidden = true; stage2.classList.add("out");
+    dimTown();
+    cover.hidden = false;
+    requestAnimationFrame(function(){ cover.classList.remove("gone"); });
+    startSnow();
+    document.getElementById("openGift").focus();
+  }
+  function hideCover(){
+    cover.classList.add("gone");
+    stopSnow();
+    setTimeout(function(){ cover.hidden = true; }, reduce ? 0 : 700);
+    save("cph-opened", true);
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById("openGift").addEventListener("click", function(){
+    lightUp(); swap(stage1, stage2);
+    setTimeout(function(){ document.getElementById("seePlan").focus(); }, 500);
+  });
+  document.getElementById("seePlan").addEventListener("click", hideCover);
+  document.getElementById("replay").addEventListener("click", showCover);
+
+  /* ---------- Plan ---------- */
+  var currentDay = "fri";
+  var openId = null;
+  var daysEl = document.getElementById("days");
+  var tl = document.getElementById("timeline");
+
+  function renderDays(){
+    daysEl.innerHTML = DAYS.map(function(d){
+      return '<button class="day" aria-pressed="'+(d.key===currentDay)+'" data-day="'+d.key+'">' +
+        '<b>'+d.short+'</b><span>'+d.mood+'</span></button>';
+    }).join("");
+    var d = dayOf(currentDay);
+    document.getElementById("dayTitle").textContent = d.title;
+    document.getElementById("daySub").textContent = d.sub;
+  }
+
+  function mapUrl(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+
+  function renderTimeline(){
+    var nowId = currentStopId();
+    tl.innerHTML = STOPS.filter(function(s){ return s.day===currentDay; }).map(function(s){
+      var isDone = done.indexOf(s.id) > -1;
+      var cls = "stop" + (s.booked?" booked":"") + (isDone?" done":"") + (s.id===nowId?" now":"");
+      var open = s.id === openId;
+      return '<li class="'+cls+'" id="stop-'+s.id+'">' +
+        '<button class="stop-head" aria-expanded="'+open+'" aria-controls="more-'+s.id+'" data-id="'+s.id+'">' +
+          '<span class="time">'+s.t+'</span><span class="dot" aria-hidden="true"></span>' +
+          '<span><span class="title">'+s.title+(s.booked?'<span class="badge">Reservado</span>':'')+'</span>' +
+          '<span class="note">'+s.note+'</span></span>' +
+        '</button>' +
+        '<div class="stop-more" id="more-'+s.id+'"'+(open?'':' hidden')+'>' +
+          '<p>'+s.more+'</p><div class="actions">' +
+            (s.place ? '<a class="btn" href="'+mapUrl(s.place)+'" target="_blank" rel="noopener">Abrir en el mapa</a>' : '') +
+            '<button class="btn'+(isDone?'':' primary')+'" data-done="'+s.id+'">'+(isDone?'Desmarcar':'Marcar como hecho')+'</button>' +
+          '</div></div></li>';
+    }).join("");
+  }
+
+  daysEl.addEventListener("click", function(e){
+    var b = e.target.closest("[data-day]"); if(!b) return;
+    currentDay = b.getAttribute("data-day"); openId = null;
+    renderDays(); renderTimeline();
+  });
+
+  tl.addEventListener("click", function(e){
+    var d = e.target.closest("[data-done]");
+    if(d){
+      var id = d.getAttribute("data-done"), i = done.indexOf(id);
+      if(i > -1) done.splice(i,1); else done.push(id);
+      save("cph-done", done); renderTimeline(); return;
+    }
+    var h = e.target.closest(".stop-head");
+    if(h){
+      var sid = h.getAttribute("data-id");
+      openId = openId === sid ? null : sid;
+      renderTimeline();
+    }
+  });
+
+  /* ---------- Status ---------- */
+  function currentStopId(){
+    var now = new Date();
+    if(now < DEPART || now >= HOME) return null;
+    var cur = null;
+    for(var i=0;i<STOPS.length;i++){ if(stopDate(STOPS[i]) <= now) cur = STOPS[i]; }
+    return cur ? cur.id : null;
+  }
+
+  function plural(n, word){ return n + " " + word + (n===1?"":"s"); }
+
+  function renderStatus(){
+    var el = document.getElementById("status");
+    var now = new Date();
+    if(now < DEPART){
+      var ms = DEPART - now;
+      var days = Math.floor(ms/86400000);
+      var hours = Math.floor((ms%86400000)/3600000);
+      var mins = Math.floor((ms%3600000)/60000);
+      var txt = days > 0 ? plural(days,"día")+" y "+plural(hours,"hora") : plural(hours,"hora")+" y "+plural(mins,"minuto");
+      el.innerHTML = '<p class="big serif">Despegamos en '+txt+'</p>' +
+        '<p class="small">Nuestro vuelo sale de Palma el viernes 13 de noviembre a las 12:15.</p>';
+      return;
+    }
+    if(now >= HOME){
+      el.innerHTML = '<p class="big serif">De vuelta en casa</p><p class="small">Gracias por el fin de semana más mágico.</p>';
+      return;
+    }
+    var cur = null, next = null;
+    for(var i=0;i<STOPS.length;i++){
+      if(stopDate(STOPS[i]) <= now) cur = STOPS[i];
+      else { next = STOPS[i]; break; }
+    }
+    var html;
+    if(!cur){
+      html = '<p class="big serif">En el aire</p><p class="small">Aterrizamos en Copenhague a las 15:20.</p>';
+    } else {
+      html = '<p class="small">Ahora mismo</p><p class="big serif">'+cur.title+'</p>';
+      if(next) html += '<p class="small">Después, a las '+next.t+': '+next.title+'</p>';
+      html += '<button class="jump" data-jump="'+cur.id+'">Enséñame dónde estamos</button>';
+    }
+    el.innerHTML = html;
+  }
+
+  document.getElementById("status").addEventListener("click", function(e){
+    var b = e.target.closest("[data-jump]"); if(!b) return;
+    var id = b.getAttribute("data-jump");
+    for(var i=0;i<STOPS.length;i++){ if(STOPS[i].id===id) currentDay = STOPS[i].day; }
+    openId = id; renderDays(); renderTimeline();
+    var el = document.getElementById("stop-"+id);
+    if(el) el.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"center"});
+  });
+
+  /* ---------- Init ---------- */
+  (function pickDay(){
+    var now = new Date();
+    if(now >= DEPART && now < HOME){
+      var id = currentStopId();
+      if(id){ for(var i=0;i<STOPS.length;i++){ if(STOPS[i].id===id) currentDay = STOPS[i].day; } openId = id; }
+    }
+  })();
+
+  buildTown();
+  renderDays(); renderTimeline(); renderStatus();
+  setInterval(function(){ renderStatus(); if(new Date() >= DEPART) renderTimeline(); }, 30000);
+
+  if(load("cph-opened", false)){
+    cover.hidden = true; cover.classList.add("gone");
+  } else {
+    startSnow();
+  }
+})();
+</script>
+</body>
+</html>
